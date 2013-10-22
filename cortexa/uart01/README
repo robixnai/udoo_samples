@@ -18,4 +18,6 @@ Note the U and the V on the lines after the memory writes.
 From there it was a simple matter of polling for RX having a character
 and TX being ready for one.
 
+This example prints a couple of things out in hex, then goes into an
+infinite loop where what you type on the serial terminal is echoed back.
 

@@ -166,6 +166,27 @@ that the vendor used, but if you dont know that then you have to guess,
 so the most recent is good enough.
 
 I so far have not found the exact part number for the Freescale ARM
-processor.  sO i GOT THE IMX6DQ reference manual IMX6DQRM.
+processor.  So for now I am using the IMX6DQ reference manual IMX6DQRM.
+(get this from the freescale website).
+
+Cross compiler tools.  These examples support the gnu toolchain, gcc
+and binutils.  Or you can use clang+llvm+binutils.  One place to get
+some pre-built gnu tools is:
+
+https://launchpad.net/gcc-arm-embedded
+
+Or codesourcery.com which is not mentor graphics, get the lite version.
+
+Or from my build_gcc repo at github, you can just build your own from
+current gcc and binutils sources.
+
+See my raspberry pi repository, bare metal and bssdata ramblings/tutorials
+to perhaps understand my coding style (GET32, PUT32, etc).  And perahaps
+understand why these examples dont care about the difference between
+arm-none-eabi- and arm-none-linux-gnueabi- variants.  Likewise clang.
+
+
+
+
 
 

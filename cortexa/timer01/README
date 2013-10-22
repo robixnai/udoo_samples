@@ -1,0 +1,51 @@
+
+See the top level README for information on connecting to the uart and
+running programs.
+
+From the memory map in the frescale reference manual and details in the
+ARM Cortex-A9 Technical Reference Manual describing the global timer
+registers.  This example displays the global timer registers in an
+infinite loop.
+
+Yes, that second number is a full 32 bit number and it is counting that
+fast 4 billion individual counts in that register every 11 seconds give
+or take.
+
+From the arm docs the peripheral clock is used to feed this timer,
+using a stopwatch the upper register changes about once every 11
+seconds.  If it were 11 exactly then 2 to the power 32 or 4 gig
+(0x100000000)/11 = 390MHz.  Not too shabby at all...
+
+From some clues in the uboot boot output
+
+CPU: Freescale i.MX6 family TO1.1 at 792 MHz
+Thermal sensor with ratio = 182
+Temperature:   41 C, calibration data 0x57e4eb69
+mx6q pll1: 792MHz
+mx6q pll2: 528MHz
+mx6q pll3: 480MHz
+mx6q pll8: 50MHz
+ipg clock     : 66000000Hz
+ipg per clock : 66000000Hz
+uart clock    : 80000000Hz
+cspi clock    : 60000000Hz
+ahb clock     : 132000000Hz
+axi clock   : 198000000Hz
+emi_slow clock: 99000000Hz
+ddr clock     : 396000000Hz
+usdhc1 clock  : 198000000Hz
+usdhc2 clock  : 198000000Hz
+usdhc3 clock  : 198000000Hz
+usdhc4 clock  : 198000000Hz
+nfc clock     : 24000000Hz
+
+We see 792MHz in a couple of places, half of that is 396 and we see
+396 mentioned in one place.
+
+If you take 2 to the power 32,  0x100000000 / 396000000 = 10.8 seconds,
+so the 11 seconds using your eyes and a stopwatch is not bad.  The
+peripheral clock driving this arm global timer is probably 396Mhz.  And
+I would assume for now that the ARM is running at 792MHz.  Not bad
+at all.
+
+
