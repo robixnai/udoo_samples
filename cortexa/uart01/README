@@ -1,0 +1,21 @@
+
+See the top level README for information on connecting to the uart and
+running programs.
+
+I experimentally determined which uart was used for the bootloader
+console by using the memory write (mw) command on the bootloaders
+command line.  Writing a character the different UTXD registers (and
+resetting if/when that crashed).  Once you hit the right one, 0x21E8040
+in this case, then you will see an extra character on the command line
+along with the prompt.
+
+MX6DL UDOO U-Boot > mw.l 0x21E8040 0x55
+UMX6DL UDOO U-Boot > mw.l 0x21E8040 0x56
+VMX6DL UDOO U-Boot >
+
+Note the U and the V on the lines after the memory writes.
+
+From there it was a simple matter of polling for RX having a character
+and TX being ready for one.
+
+

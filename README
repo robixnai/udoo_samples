@@ -1,0 +1,171 @@
+
+
+This is a selection of bare metal programming examples for the
+http://udoo.org
+board.
+
+This board has a high end ARM Cortex-A9 linux capable processor, and
+a microcontroller ARM Cortex-M3
+
+If you are running on a linux system you DONT have to get the full
+8gig image file and put it on an 8 gig sd card, there is an easier way.
+
+If you are not running on a linux host, then you can use a usb bootable
+version of linux or follow the instructions on the udoo web page
+for getting the 8gig file and writing it to an 8gig card.
+
+If running on a linux host then
+
+http://www.udoo.org/downloads/
+Select the binaries tab
+I have a dual, I think, in either case get the u-boot for the dual or
+the quad as the case may be from whicherver mirror.
+
+You can follow the instructions in the getting started guide for
+partitioning your sd card.  Basically I removed the partitions, added
+a linux partition, dont need to set the boot flag.  Then I formatted
+it as an ext3, but I dont think that matters because you use this command
+to write the u-boot image (an interesting way to do it other solutions
+simpy have two partitions and the file lives on one of them)
+
+sudo dd if=u-boot.bin of=/dev/sdX bs=512 seek=2 skip=2
+sync
+
+where /dev/sdX is the device for your sdcard.  Remember this may mess
+up a hard drive or other if you dont get this right.  You have been
+warned.
+
+I then removed the sd card from the host, put it in the udoo board and
+booted.  Since I dont have a linux image anywhere on the sdcard it
+fails as desired:
+
+Loading file "/boot/uImage" from mmc device 2:1 (xxc1)
+** File not found /boot/uImage
+Wrong Image Format for bootm command
+ERROR: can't get kernel image!
+MX6DL UDOO U-Boot >
+
+If you do make a full blown sd card that boots linux then to run these
+programs you need to stop the linux boot by pressing a key within
+the first few seconds of seeing the uboot output on the terminal.
+
+The terminal you ask!
+
+First off you need a udoo card, naturally.  Second, unfortunately, it
+appears that you need a power supply, a wall wart of some kind.  See
+the udoo docs for power rating.  I think the center is positive but
+check the schematics.  I dont know if they describe the size of the
+tip.  They are trying to be user friendly but why would you be buying
+a overpowered arduino board if you werent going to do some hobby stuff
+with it?  A little less handholding please.
+
+So if you are looking down on the card with the power plug on the
+lower left, the ethernet and usb and such on the right edge (I dont
+have any of those things plugged in for this).  the lower micro-b usb
+connector is the serial port/uart.  It appears to get power from the
+usb connector so you can plug that in first, and get your dumb terminal
+setup, then later power the arm.
+
+Along the bottom then in that same corner are two black push buttons.
+The second one over (the one on the left) is the reset button.
+Above/behind it is a jumper, as shipped, the jumper is installed, keep
+it that way to use the cortex-a9 uart on the micro-b usb to serial.
+
+With your dumb terminal setup, then power the card.  You should see
+uboot come up.  (115200 N81)
+
+As mentioned above either cripple the linux kernel by just not installing
+the image, or on your host go to the /boot directory of the sd card
+and rename uImage, or just hit a key within the first few seconds of
+power on or after a reset.
+
+Although fun and rewarding, when you find one of these boards that uses
+u-boot or redboot, has dram for memory and other things it is probably
+a good idea to just use the supplied bootloader and run from there.
+This has the disadvantage of not getting to initialize things like the
+uart, but it has the advantage of not having to initialize things like
+the plls and dram.  So these examples for this board will rely on the
+bootloader, uboot, to bring up the system.  Good, bad, or otherwise this
+means the uart is already setup and running, and it appears the clocks
+and dram, so I wont have any examples for configuring those things.  Many
+of the examples will use the uart for output.
+
+
+Loading the Cortex-A9 examples
+
+I am building both srecord and elf binaries for these examples.  I use
+minicom on a linux host to run these programs.  I find it easiest to
+start minicom while in a directory where I have the binaries, then I
+dont have to use minicoms menus to navigate, it takes some practice to
+figure out and use the minicom menus for this.
+
+One option is to load an srecord, use the loads command:
+
+MX6DL UDOO U-Boot > loads
+
+## Ready for S-Record download ...
+
+Then from minicom alt-a then s, then down arrow to ascii.
+Then next thing minicom pops up is dialong to select the directory
+and file.  Just hit enter here, and it will say no file selected and
+give you a prompt where you can just type in the file, uart01.srec for
+example.  Then hit enter and the file will download.  An srecord file
+contains address information plus the binary so you dont have to mess
+with it until you run.
+
+After it downloads it will print some info about the download, which
+will vary of course.
+
+
+## First Load Addr = 0x10800000
+
+## Last  Load Addr = 0x10800197
+
+## Total Size      = 0x00000198 = 408 Bytes
+
+## Start Addr      = 0x10800000
+
+Then use the go command at the prompt
+
+MX6DL UDOO U-Boot > go 0x10800000
+
+and the example will run.
+
+Press the reset button to run another example program.
+
+To load a binary file rather than srec, the procedure is almost identical.
+
+MX6DL UDOO U-Boot > loady 0x10800000
+
+## Ready for binary (ymodem) download to 0x10800000 at 115200 bps...
+
+then alt-a and s then select ymodem.  then select the file, uart01.bin
+for example
+
+Once complete
+
+## Total Size      = 0x00000198 = 408 Bytes
+
+and you use the go command just like above
+
+MX6DL UDOO U-Boot > go 0x10800000
+
+and the example will run.
+
+
+Loading the Cortex-M3 examples...TODO
+
+
+
+Other documents
+
+http://infocenter.arm.com  Get the technical reference manual for the
+Cortex-A9.  I grabbed the most recent rev, not sure at this time which
+rev Freescale used.  It is better to get the manual for the exact rev
+that the vendor used, but if you dont know that then you have to guess,
+so the most recent is good enough.
+
+I so far have not found the exact part number for the Freescale ARM
+processor.  sO i GOT THE IMX6DQ reference manual IMX6DQRM.
+
+
